@@ -1,0 +1,87 @@
+# SIMPLE BANKING SYSTEM
+
+accounts = {
+    "1001": {"name": "Ravi", "balance": 5000, "pin": "1234"},
+    "1002": {"name": "Priya", "balance": 8000, "pin": "5678"},
+}
+
+def login():
+    acc_no = input("Account Number: ")
+    pin    = input("PIN: ")
+    if acc_no in accounts and accounts[acc_no]["pin"] == pin:
+        print(f"\n Welcome, {accounts[acc_no]['name']}!")
+        return acc_no
+    print("Wrong account number or PIN!")
+    return None
+
+def show_balance(acc_no):
+    print(f" Balance: Rs.{accounts[acc_no]['balance']}")
+
+def deposit(acc_no):
+    amount = int(input("Deposit amount: Rs."))
+    if amount > 0:
+        accounts[acc_no]["balance"] += amount
+        print(f" Rs.{amount} deposited! New Balance: Rs.{accounts[acc_no]['balance']}")
+    else:
+        print("Enter a valid amount.")
+
+def withdraw(acc_no):
+    amount = int(input("Withdraw amount: Rs."))
+    if amount <= 0:
+        print("Enter a valid amount.")
+    elif amount > accounts[acc_no]["balance"]:
+        print(f"Not enough balance! You have Rs.{accounts[acc_no]['balance']}")
+    else:
+        accounts[acc_no]["balance"] -= amount
+        print(f" Rs.{amount} withdrawn! Remaining: Rs.{accounts[acc_no]['balance']}")
+
+def transfer(acc_no):
+    to  = input("Transfer to Account Number: ")
+    if to not in accounts:
+        print("Account not found!")
+        return
+    amount = int(input("Amount to transfer: Rs."))
+    if amount > accounts[acc_no]["balance"]:
+        print("Not enough balance!")
+    else:
+        accounts[acc_no]["balance"] -= amount
+        accounts[to]["balance"]     += amount
+        print(f" Rs.{amount} sent to {accounts[to]['name']}!")
+
+def create_account():
+    acc_no = str(1000 + len(accounts) + 1)
+    name   = input("Your Name: ")
+    pin    = input("Set a 4-digit PIN: ")
+    dep    = int(input("Opening Deposit: Rs."))
+    accounts[acc_no] = {"name": name, "balance": dep, "pin": pin}
+    print(f" Account created! Your Account Number: {acc_no}")
+
+# ── Main Program ──────────────────────────────
+
+print("=" * 35)
+print("   SIMPLE BANKING SYSTEM")
+print("=" * 35)
+
+while True:
+    print("\n1. Login\n2. Create Account\n0. Exit")
+    choice = input("Choose: ")
+
+    if choice == "0":
+        print("Goodbye!")
+        break
+
+    elif choice == "2":
+        create_account()
+
+    elif choice == "1":
+        acc = login()
+        if acc:
+            while True:
+                print("\n1.Balance  2.Deposit  3.Withdraw  4.Transfer  0.Logout")
+                ch = input("Choose: ")
+                if ch == "1": show_balance(acc)
+                elif ch == "2": deposit(acc)
+                elif ch == "3": withdraw(acc)
+                elif ch == "4": transfer(acc)
+                elif ch == "0": print("Logged out."); break
+                else: print("Invalid choice.")
